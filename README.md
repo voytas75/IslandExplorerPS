@@ -1,14 +1,15 @@
-# Island Explorer PS
+# Island Explorer PS Game
 
 ## Concept
+
 The game is a text adventure where the player explores a mysterious island. The LLM provides descriptions of the environment, generates events, and responds to player actions. The game involves exploration, solving puzzles, and interacting with various elements.
 
 ## Components
+
 1. **Introduction and Setup**: Start the game with an introduction and set up the initial environment.
 2. **Player Input**: Accept commands from the player.
 3. **LLM Interaction**: Use an LLM to generate responses and descriptions.
 4. **Game Logic**: Handle the game state, including player inventory, location, and progress.
-
 
 ## Settings
 
