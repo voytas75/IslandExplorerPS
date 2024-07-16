@@ -6,7 +6,10 @@ function Invoke-LLM {
 
     # Placeholder for actual LLM integration
     switch ($model) {
-        "default" { return Invoke-DefaultLLM $prompt }
+        "default" { 
+            
+            return Invoke-DefaultLLM $prompt 
+        }
         default { return "Model not supported." }
     }
 }
