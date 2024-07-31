@@ -1,8 +1,8 @@
-function take-item {
+function get-Gameitem {
     param ($command)
     
     # Extract the item name from the command
-    $item = $command -replace "take ", ""
+    $item = $command -replace "^(take|pick) ", ""
 
     # Check if the item is already in the inventory
     if ($global:gameState.Inventory -contains $item) {
@@ -11,7 +11,13 @@ function take-item {
     }
 
     # Use LLM to determine if the item can be taken from the current location
-    $canTakeItem = Invoke-LLM "Can the player take the $item from $($global:gameState.Location)? Answer yes or no."
+    $GameItemPrompt = @"
+Decide if the player can take the $item from $($global:gameState.Location)? Answer yes or no as JSON. Example
+{
+"['Yes' or 'No']"
+}
+"@
+    $canTakeItem = Invoke-LLM -prompt $GameItemPrompt -stream $false
 
     if ($canTakeItem -eq "yes") {
         # Add the item to the inventory

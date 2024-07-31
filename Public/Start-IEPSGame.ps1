@@ -10,6 +10,10 @@
     Date: 2024-07
 #>
 function Start-IEPSGame {
+    [CmdletBinding()]
+    param(
+        
+    )
     # Initial Game State
     $gameState = @{
         Location  = "Beach"
@@ -21,13 +25,13 @@ function Start-IEPSGame {
 
     # Game Loop
     while ($true) {
-        $gameState
+        Write-Verbose "Game state (hashtable): $($gameState | Out-String)"
         try {
             $command = Get-PlayerCommand
 
             # Validate the command before processing
             if (-not [string]::IsNullOrWhiteSpace($command)) {
-                Invoke-command -Command $command
+                Invoke-gamecommand -Command $command
             } else {
                 Write-Host "Invalid command. Please try again." -ForegroundColor Yellow
             }
