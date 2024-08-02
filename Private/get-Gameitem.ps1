@@ -24,7 +24,10 @@ Decide if the player can take the $item from $($global:gameState.Location)? Answ
         $global:gameState.Inventory += $item
         Write-Host "You have taken the $item." -ForegroundColor Green
         $gameState.inventory += $item
-    } else {
+        
+    }
+    else {
         Write-Host "You cannot take the $item from here." -ForegroundColor Red
     }
+    return (Get-LookAround -Location $gameState.Location -command "look-around")
 }

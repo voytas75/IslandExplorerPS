@@ -52,3 +52,5 @@ Write-Host "Welcome to game $script:ModuleNameFull ($script:ModuleName)"
 write-Host ""
 write-Host "Start-IEPSGame to start a game" -ForegroundColor White
 write-Host ""
+
+$script:GameCacheFolder = New-GameCacheFolder

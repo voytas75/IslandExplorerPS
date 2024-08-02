@@ -13,31 +13,31 @@ function Invoke-GameCommand {
         }
         "move*" { 
             Write-Verbose "Executing 'move' command"
-            Move-Player $command 
+            $respond = Move-Player -From $gameState.Location -Command $command 
         }
         "go*" { 
             Write-Verbose "Executing 'go' command"
-            Move-Player $command 
+            $respond = Move-Player -From $gameState.Location -Command $command 
         }
         "take*" { 
             Write-Verbose "Executing 'take' command"
-            get-Gameitem $command 
+            $respond = get-Gameitem $command 
         }
         "pick*"{
             Write-Verbose "Executing 'pick' command"
-            get-Gameitem $command 
+            $respond = get-Gameitem $command 
         }
         "explore*" { 
             Write-Verbose "Executing 'explore' command"
-            explore $command 
+            $respond = get-explore $command 
         }
         "inventory" { 
             Write-Verbose "Executing 'inventory' command"
-            Show-Inventory 
+            $respond = Show-Inventory 
         }
         "inv" { 
             Write-Verbose "Executing 'inv' command"
-            Show-Inventory 
+            $respond = Show-Inventory 
         }
         "help" { 
             Write-Verbose "Executing 'help' command"
@@ -45,7 +45,10 @@ function Invoke-GameCommand {
         }
         default { 
             Write-Verbose "Executing default command"
-            invoke-llm -prompt $command 
+            $prompt = "Based on user command '$command' response as JSON. JSON scheme {`"description`":`"[here is description]`",`"available_activity`":`"[here goes available activity name]`",`"other`":`"[here goes other]`"}"
+      
+            $respondJSON = invoke-llm -prompt $prompt
+            $respond = $respondJSON | ConvertFrom-Json
         }
     }
     Show-GameRespond $respond

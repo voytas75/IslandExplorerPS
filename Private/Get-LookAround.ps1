@@ -34,7 +34,7 @@ function Get-LookAround {
         $LookAroundPrompt = @"
 Based on user command '$command', do: 
 - Describe the surroundings at $Location on a mysterious island. 
-- Add ways and items in the location. 
+- Add ways (exit locations) and items in the location. 
 
 Use JSON with keys: description, Location, ways, items. JSON Example:
 {
@@ -52,16 +52,16 @@ Use JSON with keys: description, Location, ways, items. JSON Example:
 }
 Response with json. Use simple and short form. 
 "@
-        $response = Invoke-LLM -prompt $LookAroundPrompt -stream $false
+        $responseJSON = Invoke-LLM -prompt $LookAroundPrompt -stream $false -JSONMode $true
         Write-Verbose "Received response from LLM."
 
         $parsedResponse = $null
         try {
             Write-Verbose "Parsing response as JSON."
-            $parsedResponse = $response | ConvertFrom-Json
+            $parsedResponse = $responseJSON | ConvertFrom-Json
         }
         catch {
-            throw "Failed to parse the response as JSON: $_"
+            return "Failed to parse the response as JSON: $_"
         }
 
         $description = $parsedResponse.description
@@ -78,7 +78,7 @@ Response with json. Use simple and short form.
         #PSAOAI\Invoke-PSAOAIDalle3 -Prompt $description -ApiVersion "2024-02-01" -model "dalle3" -Deployment "dalle3" -quality standard -size 1024x1024
 
         # Log success
-        Write-Host "Look-Around executed successfully for location: $Location" -ForegroundColor Green
+        Write-Verbose "Get-LookAround executed successfully for location: $Location"
         $result = [PSCustomObject]@{
             Description = $description
             Location    = $location
@@ -91,7 +91,7 @@ Response with json. Use simple and short form.
     }
     catch {
         # Log error
-        Write-Error "An error occurred in Look-Around: $_"
+        Write-Error "An error occurred in Get-LookAround: $_"
     }
     finally {
         Write-Verbose "Ending Get-LookAround function."

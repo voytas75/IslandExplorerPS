@@ -3,16 +3,20 @@ function Invoke-LLM {
     param (
         [string]$prompt,
         [string]$model = "default", # Optional parameter to specify different models if needed
-        [bool]$stream
+        [bool]$stream,
+        [bool]$jsonmode = $true
     )
 
+    if ([string]::IsNullOrWhiteSpace($prompt)) {
+        $prompt = "response as JSON. JSON scheme {`"description`":`"[here is description]`"}"
+    }
     Write-Verbose "Invoke-LLM function called with prompt: $prompt, model: $model, stream: $stream"
 
     # Placeholder for actual LLM integration
     switch ($model) {
         "default" { 
             Write-Verbose "Using default model"
-            $response = Invoke-DefaultLLM $prompt -stream $stream
+            $response = Invoke-DefaultLLM $prompt -stream $stream -JSONMode $jsonmode
             Write-Verbose "Invoke-LLM function respond: $response"
             return $response
         }
