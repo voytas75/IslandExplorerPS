@@ -1,0 +1,91 @@
+Great! Since combining the script into a single block worked for you, that suggests the problem with running the script as a background job was likely related to how the background job context handled the separate code components or execution environment.
+
+Here are a few more steps to ensure smooth operation and to handle background job scenarios effectively:
+
+### Final Steps to Optimize and Ensure Stability
+
+1. **Verify Continuous Operation**
+
+Make sure the server continues to run correctly even if the session is closed or the user logs off:
+
+- **Use `Start-Process`**: For more control and stability, consider running the script in a separate PowerShell process instead of a background job. This can be done using `Start-Process`:
+
+  ```powershell
+  $scriptPath = "C:\path\to\your\game-server-script.ps1"
+  Start-Process powershell -ArgumentList "-File `"$scriptPath`"" -NoNewWindow
+  ```
+
+2. **Handle Errors and Logging**
+
+Add error handling and logging to capture issues and debug information:
+
+- **Error Handling**: Wrap critical sections in `try-catch` blocks:
+
+  ```powershell
+  try {
+      # Your main logic here
+  } catch {
+      Write-Host "Error: $_"
+  }
+  ```
+
+- **Logging**: Use `Write-Log` or `Out-File` to log errors and important events:
+
+  ```powershell
+  function Write-Log {
+      param ([string]$Message)
+      $logFile = "C:\path\to\logfile.log"
+      $Message | Out-File -Append -FilePath $logFile
+  }
+  
+  # Use Write-Log for logging
+  Write-Log "Server started successfully"
+  ```
+
+3. **Optimize Port Usage**
+
+Ensure that the port you are using is free and available for your application:
+
+- **Check Port Availability**: Before starting the server, check if the port is available:
+
+  ```powershell
+  $port = 8082
+  $isPortOpen = Test-NetConnection -Port $port
+  if ($isPortOpen) {
+      Write-Host "Port $port is already in use."
+  } else {
+      Write-Host "Port $port is available."
+  }
+  ```
+
+4. **Ensure Robust Termination**
+
+Handle clean shutdowns for the HTTP server:
+
+- **Graceful Shutdown**: Implement a mechanism to stop the server gracefully if needed:
+
+  ```powershell
+  function Stop-Server {
+      $listener.Stop()
+      $listener.Close()
+      Write-Host "Server stopped."
+  }
+
+  # Add a signal handler or mechanism to call Stop-Server
+  ```
+
+5. **Check Firewall and Security Settings**
+
+Verify that the firewall or security settings are not interfering with the server:
+
+- **Add Firewall Rule**: Allow traffic on the port used by the server:
+
+  ```powershell
+  New-NetFirewallRule -DisplayName "Allow Port 8082" -Direction Inbound -Protocol TCP -LocalPort 8082 -Action Allow
+  ```
+
+### Summary
+
+By following these steps, you can ensure that your HTTP server script operates smoothly and robustly, even when running as a background job or a separate process. Implementing error handling, logging, and ensuring port availability and security settings will contribute to a stable and reliable service.
+
+If you have any more specific issues or questions, feel free to ask!
