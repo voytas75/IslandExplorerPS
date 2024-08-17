@@ -9,15 +9,15 @@ function Invoke-GameCommand {
     switch -Wildcard ($command) {
         "look*" { 
             Write-Verbose "Executing 'look' command"
-            $respond = Get-LookAround -location $gameState.Location -Command $command
+            $respond = Get-LookAround -location $global:gameState.Location -Command $command
         }
         "move*" { 
             Write-Verbose "Executing 'move' command"
-            $respond = Move-Player -From $gameState.Location -Command $command 
+            $respond = Move-Player -From $global:gameState.Location -Command $command 
         }
         "go*" { 
             Write-Verbose "Executing 'go' command"
-            $respond = Move-Player -From $gameState.Location -Command $command 
+            $respond = Move-Player -From $global:gameState.Location -Command $command 
         }
         "take*" { 
             Write-Verbose "Executing 'take' command"
@@ -41,7 +41,7 @@ function Invoke-GameCommand {
         }
         "help" { 
             Write-Verbose "Executing 'help' command"
-            Show-Help 
+            $respond = $global:GameState.Help 
         }
         default { 
             Write-Verbose "Executing default command"
@@ -49,6 +49,11 @@ function Invoke-GameCommand {
       
             $respondJSON = invoke-llm -prompt $prompt
             $respond = $respondJSON | ConvertFrom-Json
+        $global:GameState = @{
+            Description = $respond.Description
+            activity = $respond.available_activity
+            other = $respond.other
+        }
         }
     }
     Show-GameRespond $respond

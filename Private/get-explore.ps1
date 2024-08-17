@@ -15,17 +15,26 @@ function get-explore {
 
         # Use LLM to generate the exploration description based on the current location and action
         Write-Verbose "Generating exploration description using LLM."
-        $prompt = "The player is at $($global:gameState.Location) and wants to explore $action. Describe what they see, hear, and feel."
-        $descriptionJSON = Invoke-LLM -prompt $prompt -stream $false -jsonmode $true
+        $prompt = @"
+    The player is at $($global:gameState.Location) and wants to explore $action. Describe what they see, hear, and feel. Answer as JSON. Json schema:
+{
+    "Description"="[sescription what user sees]",
+    "sounds"="[sound description]", 
+    "smells"="[smell description]",
+    "textures"="[textures description]
+}
+"@
+        $exploreJSON = Invoke-LLM -prompt $prompt -stream $false -jsonmode $true
         Write-Verbose "Received JSON response from LLM."
 
         # Convert JSON response to PowerShell object
         Write-Verbose "Converting JSON response to PowerShell object."
-        $description = $descriptionJSON | ConvertFrom-Json
+        $explore = $exploreJSON | ConvertFrom-Json
 
         # Return the description object
         Write-Verbose "Returning the description object."
-        return $description
+        $global:GameState.Description = $explore.description + " " + $explore.sounds + " " + $explore.smells + " " + $explore.textures
+        return $explore
     }
     catch {
         # Error handling

@@ -53,6 +53,7 @@ function Move-Player {
 
         # Update the game state with the new location
         $gameState.Location = $newLocation
+        $global:GameState.Location = $newLocation
         Write-Verbose "Updated game state location to: $newLocation"
 
         # Generate a description for the move
@@ -64,12 +65,12 @@ function Move-Player {
         if ($newLocation -ne $currentLocation) {
             Write-Verbose "New location is different from the current location."
             Write-Host "You move to $newLocation." -ForegroundColor Green
-            $respond = get-lookaround -Location $newLocation -Command "look around"
+            $respond = get-lookaround -Location $global:GameState.Location -Command "look around"
         }
         else {
             Write-Verbose "New location is the same as the current location."
             Write-Host "You can't move in that direction." -ForegroundColor Yellow
-            $respond = get-lookaround -Location $newLocation -Command "look around"
+            $respond = get-lookaround -Location $global:GameState.Location -Command "look around"
         }
         return $respond
     }

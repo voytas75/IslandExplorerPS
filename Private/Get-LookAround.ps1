@@ -85,6 +85,11 @@ Response with json. Use simple and short form.
             Ways        = $ways
             Items       = $Items
         }
+        $global:GameState.Description = $description
+        $global:GameState.Location = $location
+        $global:GameState.Ways = $ways
+        $global:GameState.Items = $Items
+        $global:GameState.Progress = "progress"
 
         Write-Verbose "Returning result object."
         return $result
