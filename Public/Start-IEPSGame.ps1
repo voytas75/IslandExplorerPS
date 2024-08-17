@@ -9,7 +9,29 @@
     Author: Voytas75
     Date: 2024-07
 #>
+
 function Start-IEPSGame {
+    [CmdletBinding()]
+    param(
+        
+    )
+    # Initial Game State
+    $global:GameState = @{
+        Location  = "Beach"
+        Inventory = @()
+        Progress  = "Start"
+        Description = "You find yourself on a deserted island. Your goal is to explore the island, solve puzzles, and find a way to escape.
+Type 'help' for a list of commands."
+    }
+
+    Show-Introduction
+
+    # Start HTTP server
+    Start-HTTPServer
+}
+
+
+function Start-IEPSGame2 {
     [CmdletBinding()]
     param(
         

@@ -119,3 +119,16 @@ $job = Start-Job -ScriptBlock $scriptBlock
 
 # Output the job ID to track the server
 $job.Id
+
+
+# Display other job data
+$jobs = Get-Job
+foreach ($job in $jobs) {
+    Write-Host "Job ID: $($job.Id)"
+    Write-Host "Job Name: $($job.Name)"
+    Write-Host "Job State: $($job.State)"
+    Write-Host "Job HasMoreData: $($job.HasMoreData)"
+    #Write-Host "Job Command: $($job.Command)"
+    Write-Host "-----------------------------"
+}
+
