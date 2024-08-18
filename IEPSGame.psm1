@@ -54,3 +54,5 @@ write-Host "Start-IEPSGame to start a game" -ForegroundColor White
 write-Host ""
 
 $script:GameCacheFolder = New-GameCacheFolder
+
+import-module D:\dane\voytas\Dokumenty\visual_studio_code\github\PSAOAI\PSAOAI.psd1 -force

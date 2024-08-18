@@ -21,7 +21,6 @@ function Start-HTTPServer {
         if ($request.Url.AbsolutePath -eq "/") {
           Write-Verbose "Serving initial HTML form."
 
-          import-module D:\dane\voytas\Dokumenty\visual_studio_code\github\PSAOAI\PSAOAI.psd1 -force
           # Serve the initial HTML form
           $html = @"
 <!DOCTYPE html>
@@ -71,8 +70,9 @@ function Start-HTTPServer {
           $imageFullName = invoke-psaoaidalle3 -Prompt $global:GameState.Description -model "dalle3" -Deployment "dalle3" -size 1024x1024 -quality standard -style natural -SavePath "D:\dane\voytas\Dokumenty\visual_studio_code\github\IslandExplorerPS\images"
           $imageFullNameLeaf = Split-Path -Leaf $imageFullName
           if ($imageFullName) {
-            $imageHtml = "<img src='images\$imageFullNameLeaf' alt='Generated Image' style='max-width:100%;height:auto;'>"
-          } else {
+            $imageHtml = "<img src='images/$imageFullNameLeaf' alt='Generated Image' style='max-width:25%;height:auto;'>"
+          }
+          else {
             $imageHtml = ""
           }
           # Serve the result and the form again
@@ -116,6 +116,30 @@ $htmlHelp
 </body>
 </html>
 "@
+
+          $response.ContentType = "text/html"
+          $response.ContentLength64 = [System.Text.Encoding]::UTF8.GetByteCount($html)
+          $response.OutputStream.Write([System.Text.Encoding]::UTF8.GetBytes($html), 0, [System.Text.Encoding]::UTF8.GetByteCount($html))
+          $response.OutputStream.Close()
+
+        }
+        elseif ($request.Url.AbsolutePath.StartsWith("/images/")) {
+          # Serve image files
+          $filePath = $imageFullName
+          if (Test-Path $filePath) {
+            $bytes = [System.IO.File]::ReadAllBytes($filePath)
+            $response.ContentType = "image/png"
+            $response.ContentLength64 = $bytes.Length
+            $response.OutputStream.Write($bytes, 0, $bytes.Length)
+            $response.OutputStream.Close()
+            Write-Verbose "Image served: $filePath"
+          }
+          else {
+            $response.StatusCode = 404
+            $response.StatusDescription = "Not Found"
+            $response.OutputStream.Close()
+            Write-Verbose "Image not found: $filePath"
+          }
         }
 
         # Send the response
