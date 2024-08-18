@@ -1,8 +1,8 @@
 # Function to initialize the game history
 function Initialize-GameHistory {
     # Initialize GameHistory as an array of hashtables
-    $global:GameHistory = @(
-        @{
+    $global:GameHistory = @()
+<#        @{
             Timestamp   = (Get-Date)  # Current date and time
             Command     = ""            # Command issued by the player
             Result      = ""             # Result of the command
@@ -11,6 +11,7 @@ function Initialize-GameHistory {
             Description = ""        # Description of the scene at the time of the command
         }
     )
+        #>
     # To add a new element to GameHistory, use the following syntax:
     # $global:GameHistory += @{
     #     Timestamp = (Get-Date)
@@ -26,11 +27,11 @@ function Initialize-GameHistory {
 function Add-GameHistoryEntry {
     $entry = @{
         Timestamp   = (Get-Date)
-        Command     = $global:GameState.lastCommand
-        Result      = $global:GameState.Description
+        Description = $global:GameState.Description
+        Other       = $global:GameState.Other
         Location    = $global:GameState.Location
         Inventory   = $global:GameState.Inventory
-        Description = $global:GameState.Description
+        LastCommand = $global:GameState.lastCommand
     }
 
     $global:GameHistory += $entry
