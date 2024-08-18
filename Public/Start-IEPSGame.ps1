@@ -24,9 +24,9 @@ function Start-IEPSGame {
             Progress        = "Start"
             Description     = "You find yourself on a deserted island. Your goal is to explore the island, solve puzzles, and find a way to escape. Type 'help' for a list of commands."
             Help            = "Available commands:`n...`nthere is no help`nyou are on your own"
-            Items           = $()
+            Items           = @()
             ItemDescription = ""
-            activity        = ""
+            activity        = @()
             other           = ""
             lastCommand     = ""
         }

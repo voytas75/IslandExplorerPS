@@ -22,7 +22,11 @@ The player is at $($global:gameState.Location) and wants to explore $action. Des
     "Sounds": "[sound description]", 
     "Smells": "[smell description]",
     "Textures": "[textures description]",
-    "available_activity": "[here goes available activity name]",
+    "available_activity":
+    [
+        "[acivity 1]",
+        "[acivity n]"
+    ],
     "other": "[here goes other]"
 }
 "@

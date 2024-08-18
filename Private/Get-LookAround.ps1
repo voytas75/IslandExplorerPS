@@ -42,14 +42,18 @@ Use JSON with keys: description, Location, ways, items, and all others. JSON sch
   "Location": "[here put location]",
   "Ways": 
   [
-  "[here put way to go]",
-  "[here put way to go]"
+    "[here put way to go]",
+    "[here put way to go]"
   ],
   "Items": [
-  "[here put an item]",
-  "[here put an item]"
+    "[here put an item]",
+    "[here put an item]"
   ],
-  "available_activity":"[here goes available activity name]",
+  "available_activity":
+  [
+   "[acivity 1]",
+   "[acivity n]"
+  ],
   "other":"[here goes other]"
 }
 Use simple and short form. 

@@ -53,13 +53,24 @@ function Invoke-GameCommand {
         }
         default { 
             Write-Verbose "Executing default command"
-            $prompt = "Based on user command '$command' response as JSON. JSON scheme {`"description`":`"[here is description]`",`"available_activity`":`"[here goes available activity name]`",`"other`":`"[here goes other]`"}"
+            $prompt = @"
+Based on user command '$command' response as JSON. JSON schema: 
+{
+    "description":"[here is description]",
+    "available_activity":
+        [
+        "[acivity 1]".
+        "[acivity n]".
+    ],
+    "other":"[here goes other]"
+}
+"@
       
             $respondJSON = invoke-llm -prompt $prompt
             $respond = $respondJSON | ConvertFrom-Json
         $global:GameState = @{
             Description = $respond.Description
-            activity = $respond.available_activity
+            activity = @($respond.available_activity)
             other = $respond.other
         }
         }
@@ -68,10 +79,10 @@ function Invoke-GameCommand {
     Write-Verbose "GameState Location: $($global:GameState.Location)"
     Write-Verbose "GameState Ways: $($global:GameState.Ways -join ', ')"
     Write-Verbose "GameState Items: $($global:GameState.Items -join ', ')"
-    Write-Verbose "GameState Activity: $($global:GameState.activity)"
+    Write-Verbose "GameState Activity: $($global:GameState.activity -join ', ')"
     Write-Verbose "GameState Other: $($global:GameState.other)"
 
     Add-GameHistoryEntry
-    
+
     Show-GameRespond $respond
 }

@@ -41,9 +41,9 @@ function Show-GameRespond {
         Write-Verbose "Displayed Items"
     }
 
-    # Display the available_activity property if not empty
+    # Display the activity property if not empty
     if ($global:GameState.activity) {
-        Write-Host "Available activities: $($global:GameState.activity)" -ForegroundColor Blue
+        Write-Host "Available activities: $($global:GameState.activity -join ', ')" -ForegroundColor Blue
         Write-Verbose "Displayed Available activities"
     }
 

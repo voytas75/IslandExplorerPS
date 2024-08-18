@@ -43,7 +43,18 @@ function Move-Player {
 
         do {
             # Request new location from LLM
-            $llmPrompt = "player moves $direction from $currentLocation. What is new location? Generate a location name. Provide only the name, without any additional description or context. response as Json. JSON schema: {`"Target_location`":`"[here will be target location]`",`"available_activity`":`"[here goes available activity name]`",`"other`":`"[here goes other]`"}."
+            $llmPrompt = @"
+Player moves $direction from $currentLocation. What is new location? Generate a location name. Provide only the name, without any additional description or context. Response as Json. JSON schema: 
+{
+    "Target_location":"[here will be target location]",
+    "available_activity":
+        [
+            "[acivity 1]",
+            "[acivity n]"
+        ],
+    "other":"[here goes other]"
+}
+"@
             Write-Verbose "Sending prompt to LLM: $llmPrompt"
             $newLocationJSON = Invoke-LLM -prompt $llmPrompt -jsonmode $true
             $newLocation = ($newLocationJSON | ConvertFrom-Json).Target_location
