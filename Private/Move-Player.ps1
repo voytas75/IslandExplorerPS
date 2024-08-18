@@ -27,7 +27,7 @@ function Move-Player {
     try {
         Write-Verbose "Starting Move-Player function."
         
-        # Validate the input
+        # Validate the input command
         if ([string]::IsNullOrWhiteSpace($command)) {
             Write-Verbose "Invalid command detected: command is null or whitespace."
             return "Invalid command. The command must start with 'move ' and cannot be empty or null."
@@ -37,41 +37,38 @@ function Move-Player {
         $direction = $command -replace "move ", ""
         Write-Verbose "Extracted direction: $direction"
 
-        # Determine the new location using LLM
-        $currentLocation = $gameState.Location
+        # Get the current location from the game state
+        $currentLocation = $global:gameState.Location
         Write-Verbose "Current location: $currentLocation"
 
         do {
             # Request new location from LLM
-            $llmPrompt = "player moves $direction from $currentLocation. What is new location? Generate a location name. Provide only the name, without any additional description or context. response as Json. JSON schema: {`"Target_location`":`"[here will be target location]`"}."
+            $llmPrompt = "player moves $direction from $currentLocation. What is new location? Generate a location name. Provide only the name, without any additional description or context. response as Json. JSON schema: {`"Target_location`":`"[here will be target location]`",`"available_activity`":`"[here goes available activity name]`",`"other`":`"[here goes other]`"}."
             Write-Verbose "Sending prompt to LLM: $llmPrompt"
             $newLocationJSON = Invoke-LLM -prompt $llmPrompt -jsonmode $true
-            $newLocation = $newLocationJSON | ConvertFrom-Json
-            $newLocation = $newLocation.Target_location
+            $newLocation = ($newLocationJSON | ConvertFrom-Json).Target_location
             Write-Verbose "Received new location: $newLocation"
         } while ([string]::IsNullOrWhiteSpace($newLocation))
 
-        # Update the game state with the new location
-        $gameState.Location = $newLocation
+        # Update the game state with the new location and other elements
         $global:GameState.Location = $newLocation
-        Write-Verbose "Updated game state location to: $newLocation"
-
-        # Generate a description for the move
-        #$descriptionPrompt = "Player moves from $From to $newLocation. Create simple and short description."
-        #Write-Verbose "Sending description prompt to LLM: $descriptionPrompt"
-        #Invoke-LLM -prompt $descriptionPrompt
+        $global:GameState.Activity = ($newLocationJSON | ConvertFrom-Json).available_activity
+        $global:GameState.Other = ($newLocationJSON | ConvertFrom-Json).other
+        Write-Verbose "Updated game state location"
+        Write-Verbose "Updated game state available activity"
+        Write-Verbose "Updated game state other"
 
         # Check if the new location is different from the current location
         if ($newLocation -ne $currentLocation) {
             Write-Verbose "New location is different from the current location."
             Write-Host "You move to $newLocation." -ForegroundColor Green
-            $respond = get-lookaround -Location $global:GameState.Location -Command "look around"
-        }
-        else {
+        } else {
             Write-Verbose "New location is the same as the current location."
             Write-Host "You can't move in that direction." -ForegroundColor Yellow
-            $respond = get-lookaround -Location $global:GameState.Location -Command "look around"
         }
+
+        # Provide feedback on the new surroundings
+        $respond = get-lookaround -Location $global:GameState.Location -Command "look around"
         return $respond
     }
     catch {

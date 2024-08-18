@@ -36,7 +36,7 @@ Based on user command '$command', do:
 - Describe the surroundings at $Location on a mysterious island. 
 - Add ways (exit locations) and items in the location. 
 
-Use JSON with keys: description, Location, ways, items. JSON Example:
+Use JSON with keys: description, Location, ways, items, and all others. JSON schema:
 {
   "description": "[here put description]",
   "Location": "[here put location]",
@@ -46,51 +46,62 @@ Use JSON with keys: description, Location, ways, items. JSON Example:
   "[here put way to go]"
   ],
   "Items": [
-  "[here put a item]",
-  "[here put a item]"
-  ]
+  "[here put an item]",
+  "[here put an item]"
+  ],
+  "available_activity":"[here goes available activity name]",
+  "other":"[here goes other]"
 }
-Response with json. Use simple and short form. 
+Use simple and short form. 
 "@
         $responseJSON = Invoke-LLM -prompt $LookAroundPrompt -stream $false -JSONMode $true
         Write-Verbose "Received response from LLM."
 
-        $parsedResponse = $null
+        # Parse the response as JSON
+        Write-Verbose "Parsing response as JSON."
         try {
-            Write-Verbose "Parsing response as JSON."
             $parsedResponse = $responseJSON | ConvertFrom-Json
         }
         catch {
             return "Failed to parse the response as JSON: $_"
         }
 
+        # Extract information from the parsed response
         $description = $parsedResponse.description
         $location = $parsedResponse.Location
         $ways = $parsedResponse.Ways
         $Items = $parsedResponse.Items
+        $available_activity = $parsedResponse.available_activity
+        $other = $parsedResponse.other
 
-        Write-Verbose "Description: $description"
-        Write-Verbose "Location: $location"
-        Write-Verbose "Ways: $($ways -join ", ")"
-        Write-Verbose "Items: $($Items -join ", ")"
-        
-        # Generate image based on description
-        #PSAOAI\Invoke-PSAOAIDalle3 -Prompt $description -ApiVersion "2024-02-01" -model "dalle3" -Deployment "dalle3" -quality standard -size 1024x1024
-
-        # Log success
-        Write-Verbose "Get-LookAround executed successfully for location: $Location"
-        $result = [PSCustomObject]@{
-            Description = $description
-            Location    = $location
-            Ways        = $ways
-            Items       = $Items
-        }
+        # Update global game state
+        $global:GameState.activity = $available_activity
+        $global:GameState.other = $other
         $global:GameState.Description = $description
         $global:GameState.Location = $location
         $global:GameState.Ways = $ways
         $global:GameState.Items = $Items
         $global:GameState.Progress = "progress"
 
+        # Log the extracted information
+        Write-Verbose "Description: $description"
+        Write-Verbose "Location: $location"
+        Write-Verbose "Ways: $($ways -join ", ")"
+        Write-Verbose "Items: $($Items -join ", ")"
+        
+        # Generate image based on description (commented out)
+        # PSAOAI\Invoke-PSAOAIDalle3 -Prompt $description -ApiVersion "2024-02-01" -model "dalle3" -Deployment "dalle3" -quality standard -size 1024x1024
+
+        # Log success
+        Write-Verbose "Get-LookAround executed successfully for location: $Location"
+
+        # Create and return result object
+        $result = [PSCustomObject]@{
+            Description = $description
+            Location    = $location
+            Ways        = $ways
+            Items       = $Items
+        }
         Write-Verbose "Returning result object."
         return $result
     }

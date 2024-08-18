@@ -31,6 +31,14 @@ function Invoke-GameCommand {
             Write-Verbose "Executing 'explore' command"
             $respond = get-explore $command 
         }
+        "inspect*" { 
+            Write-Verbose "Executing 'inspect' command"
+            $respond = get-explore $command 
+        }
+        "examine*" { 
+            Write-Verbose "Executing 'examine' command"
+            $respond = get-explore $command 
+        }
         "inventory" { 
             Write-Verbose "Executing 'inventory' command"
             $respond = Show-Inventory 
@@ -56,5 +64,14 @@ function Invoke-GameCommand {
         }
         }
     }
+    Write-Verbose "GameState Description: $($global:GameState.Description)"
+    Write-Verbose "GameState Location: $($global:GameState.Location)"
+    Write-Verbose "GameState Ways: $($global:GameState.Ways -join ', ')"
+    Write-Verbose "GameState Items: $($global:GameState.Items -join ', ')"
+    Write-Verbose "GameState Activity: $($global:GameState.activity)"
+    Write-Verbose "GameState Other: $($global:GameState.other)"
+
+    Add-GameHistoryEntry
+    
     Show-GameRespond $respond
 }

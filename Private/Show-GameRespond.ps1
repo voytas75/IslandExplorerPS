@@ -11,51 +11,63 @@ function Show-GameRespond {
         return
     }
 
-    # Check and display the Description property if it exists
-    if ($respond.PSObject.Properties.Match("Description").Count -gt 0) {
-        Write-Host "Description: $($respond.Description)" -ForegroundColor Cyan
-        Write-Verbose "Displayed Description: $($respond.Description)"
-    } else {
-        Write-Verbose "Description property not found in the response object."
+    # Display the Description property if not empty
+    if ($global:GameState.Description) {
+        Write-Host "Description: $($global:GameState.Description)" -ForegroundColor Cyan
+        Write-Verbose "Displayed Description"
     }
 
-    # Check and display the other property if it exists
-    if ($respond.PSObject.Properties.Match("other").Count -gt 0) {
-        Write-Host "$($respond.other)" -ForegroundColor Cyan
-        Write-Verbose "Displayed other: $($respond.other)"
-    } else {
-        Write-Verbose "Other property not found in the response object."
+    # Display the other property if not empty
+    if ($global:GameState.other) {
+        Write-Host "$($global:GameState.other)" -ForegroundColor Cyan
+        Write-Verbose "Displayed other"
     }
 
-    # Check and display the Location property if it exists
-    if ($respond.PSObject.Properties.Match("Location").Count -gt 0) {
-        Write-Host "Location: $($respond.Location)" -ForegroundColor Green
-        Write-Verbose "Displayed Location: $($respond.Location)"
-    } else {
-        Write-Verbose "Location property not found in the response object."
+    # Display the Location property if not empty
+    if ($global:GameState.Location) {
+        Write-Host "Location: $($global:GameState.Location)" -ForegroundColor Green
+        Write-Verbose "Displayed Location"
     }
 
-    # Check and display the Ways property if it exists
-    if ($respond.PSObject.Properties.Match("Ways").Count -gt 0) {
-        Write-Host "Ways to go: $($respond.Ways -join ", ")" -ForegroundColor Magenta
-        Write-Verbose "Displayed Ways: $($respond.Ways -join ", ")"
-    } else {
-        Write-Verbose "Ways property not found in the response object."
+    # Display the Ways property if not empty
+    if ($global:GameState.Ways) {
+        Write-Host "Ways to go: $($global:GameState.Ways -join ', ')" -ForegroundColor Magenta
+        Write-Verbose "Displayed Ways"
     }
 
-    # Check and display the Items property if it exists
-    if ($respond.PSObject.Properties.Match("Items").Count -gt 0) {
-        Write-Host "Items: $($respond.Items -join ", ")" -ForegroundColor Blue
-        Write-Verbose "Displayed Items: $($respond.Items -join ", ")"
-    } else {
-        Write-Verbose "Items property not found in the response object."
+    # Display the Items property if not empty
+    if ($global:GameState.Items) {
+        Write-Host "Items: $($global:GameState.Items -join ', ')" -ForegroundColor Blue
+        Write-Verbose "Displayed Items"
     }
 
-    # Check and display the available_activity property if it exists
-    if ($respond.PSObject.Properties.Match("available_activity").Count -gt 0) {
-        Write-Host "Available activities: $($respond.available_activity)" -ForegroundColor Blue
-        Write-Verbose "Displayed Available activities: $($respond.available_activity)"
-    } else {
-        Write-Verbose "Available activities property not found in the response object."
+    # Display the available_activity property if not empty
+    if ($global:GameState.activity) {
+        Write-Host "Available activities: $($global:GameState.activity)" -ForegroundColor Blue
+        Write-Verbose "Displayed Available activities"
+    }
+
+    # Display the Progress property if not empty
+    if ($global:GameState.Progress) {
+        Write-Host "Progress: $($global:GameState.Progress)" -ForegroundColor Yellow
+        Write-Verbose "Displayed Progress"
+    }
+
+    # Display the Inventory property if not empty
+    if ($global:GameState.Inventory) {
+        Write-Host "Inventory: $($global:GameState.Inventory -join ', ')" -ForegroundColor White
+        Write-Verbose "Displayed Inventory"
+    }
+
+    # Display the ItemDescription property if not empty
+    if ($global:GameState.ItemDescription) {
+        Write-Host "Item Description: $($global:GameState.ItemDescription)" -ForegroundColor DarkCyan
+        Write-Verbose "Displayed Item Description"
+    }
+
+    # Display the lastCommand property if not empty
+    if ($global:GameState.lastCommand) {
+        Write-Host "Last Command: $($global:GameState.lastCommand)" -ForegroundColor DarkYellow
+        Write-Verbose "Displayed Last Command"
     }
 }

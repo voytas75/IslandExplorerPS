@@ -12,60 +12,45 @@
 
 function Start-IEPSGame {
     [CmdletBinding()]
-    param(
-        
-    )
-    # Initial Game State
-    $global:GameState = @{
-        Location  = "Beach"
-        Inventory = @()
-        Progress  = "Start"
-        Description = "You find yourself on a deserted island. Your goal is to explore the island, solve puzzles, and find a way to escape.
-Type 'help' for a list of commands."
-        Help = "Available commands:`n...`nthere is no help`nyou are on your own"
-        Items = $()
-        ItemDescription = ""
-        activity = ""
-        other = ""
-        lastCommand = ""
-    }
+    param()
+    
+    Write-Verbose "Initializing game state."
 
-    Show-Introduction
-
-    # Start HTTP server
-    Start-HTTPServer
-}
-
-
-function Start-IEPSGame2 {
-    [CmdletBinding()]
-    param(
-        
-    )
-    # Initial Game State
-    $gameState = @{
-        Location  = "Beach"
-        Inventory = @()
-        Progress  = "Start"
-    }
-
-    Show-Introduction
-
-    # Game Loop
-    while ($true) {
-        Write-Verbose "Game state (hashtable): $($gameState | Out-String)"
-        try {
-            $command = Get-PlayerCommand
-
-            # Validate the command before processing
-            if (-not [string]::IsNullOrWhiteSpace($command)) {
-                Invoke-gamecommand -Command $command
-            } else {
-                Write-Host "Invalid command. Please try again." -ForegroundColor Yellow
-            }
+    try {
+        # Initial Game State
+        $global:GameState = @{
+            Location        = "Beach"
+            Inventory       = @()
+            Progress        = "Start"
+            Description     = "You find yourself on a deserted island. Your goal is to explore the island, solve puzzles, and find a way to escape. Type 'help' for a list of commands."
+            Help            = "Available commands:`n...`nthere is no help`nyou are on your own"
+            Items           = $()
+            ItemDescription = ""
+            activity        = ""
+            other           = ""
+            lastCommand     = ""
         }
-        catch {
-            Write-Error "An error occurred while processing the command: $_"
+
+        Write-Verbose "Game state initialized."
+
+        # Initialize game history
+
+        if (-not $global:GameHistory) {
+            Initialize-GameHistory
+            Write-Verbose "Initializing game history."
         }
+
+        # Show introduction to the player
+        Write-Verbose "Showing game introduction."
+        Show-Introduction
+
+        # Start HTTP server
+        Write-Verbose "Starting HTTP server."
+        Start-HTTPServer
+
+        Write-Verbose "Game started successfully."
+    }
+    catch {
+        Write-Error "An error occurred while starting the game: $_"
     }
 }
