@@ -20,6 +20,8 @@ function Start-HTTPServer {
 
         if ($request.Url.AbsolutePath -eq "/") {
           Write-Verbose "Serving initial HTML form."
+
+          import-module D:\dane\voytas\Dokumenty\visual_studio_code\github\PSAOAI\PSAOAI.psd1 -force
           # Serve the initial HTML form
           $html = @"
 <!DOCTYPE html>
@@ -66,7 +68,13 @@ function Start-HTTPServer {
           if ($global:GameState.activity) {
             $activityLinks = $global:GameState.activity | ForEach-Object { "<li><a href='/command?command=$($_)'>$($_)</a></li>" } 
           }
-
+          $imageFullName = invoke-psaoaidalle3 -Prompt $global:GameState.Description -model "dalle3" -Deployment "dalle3" -size 1024x1024 -quality standard -style natural -SavePath "D:\dane\voytas\Dokumenty\visual_studio_code\github\IslandExplorerPS\images"
+          $imageFullNameLeaf = Split-Path -Leaf $imageFullName
+          if ($imageFullName) {
+            $imageHtml = "<img src='images\$imageFullNameLeaf' alt='Generated Image' style='max-width:100%;height:auto;'>"
+          } else {
+            $imageHtml = ""
+          }
           # Serve the result and the form again
           $html = @"
 <!DOCTYPE html>
@@ -75,6 +83,7 @@ function Start-HTTPServer {
 <h1>Island Explorer Game</h1>
 <p>Description of Scene: <b> $($global:GameState.Description)</b></p>
 <p>Others: $($global:GameState.other)</p>
+$imageHtml
 <p>Current Location: $($global:GameState.Location)</p>
 <p>Last Command: $($global:GameState.lastCommand)</p>
 <p>Inventory: $($global:GameState.Inventory -join ", ")</p>
