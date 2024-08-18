@@ -10,7 +10,7 @@ function Invoke-LLM {
     if ([string]::IsNullOrWhiteSpace($prompt)) {
         $prompt = "response as JSON. JSON scheme {`"description`":`"[here is description]`"}"
     }
-    Write-Verbose "Invoke-LLM function called with prompt: $prompt, model: $model, stream: $stream"
+    Write-Verbose "Invoke-LLM function called with prompt: $prompt, model: $model, stream: $stream, jsonmode: $jsonmode"
 
     # Placeholder for actual LLM integration
     switch ($model) {

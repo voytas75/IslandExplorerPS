@@ -28,11 +28,10 @@ function Start-HTTPServer {
 <h1>Island Explorer Game</h1>
 <p>Description of Scene: $($global:GameState.Description)</p>
 <p>Current Location: $($global:GameState.Location)</p>
-<p>Inventory: $($global:GameState.Inventory -join ", ")</p>
 <p>Progress: $($global:GameState.Progress)</p>
 <form action="/command" method="get">
-  <label for="command">Enter your command:</label><br><br>
-  <input type="text" id="command" name="command" required><br><br>
+  <label for="command">Enter your command:</label>
+  <input type="text" id="command" name="command" required>
   <input type="submit" value="Submit">
 </form>
 <i>
